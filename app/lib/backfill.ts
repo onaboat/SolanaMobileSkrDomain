@@ -54,7 +54,7 @@ export class DomainBackfill {
                 timestamp: new Date((sig.blockTime || Date.now() / 1000) * 1000).toISOString(),
                 blockTime: sig.blockTime,
                 fee: tx?.meta?.fee,
-                accounts: tx?.transaction?.message?.accountKeys?.map((key: any) => key.toBase58())
+                accounts: undefined
               }
             }
             return null
