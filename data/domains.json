@@ -1,0 +1,362 @@
+[
+  {
+    "name": "1dilly.skr",
+    "signature": "4CEe1Fuugwtfhk12zfqctYVvPhNY9YeoSVgjmKtbBrxMvZ4RZJ7MP5Vq4gtzbu6FHbQ5FDoszBNhcTknCPuSbKcm",
+    "timestamp": "2025-08-18T15:07:46.000Z",
+    "blockTime": 1755529666,
+    "fee": 810532,
+    "owner": "GtS276KVfCzDhqbm5Nx9Fc2NybgvmffJEj1eLER33VoW"
+  },
+  {
+    "name": "telegram.skr",
+    "signature": "1kexweMQrtWtt4nwibTocEhUF38xv8QZBxPogWiYRZUTd6T2ED2VQR4wy7jTfHFrQmgpQeaDRaRgzdgn5ptiJUK",
+    "timestamp": "2025-08-18T15:07:29.000Z",
+    "blockTime": 1755529649,
+    "fee": 479221,
+    "owner": "8UbiHm5x2V21xgfQSJiHH5aGRMqWaBg3bezUGiQFdMMm"
+  },
+  {
+    "name": "paulsingh1324.skr",
+    "signature": "3HpZDeK1Pu4M8jhHZyA8DuZ8afg1cRHZoZBhiGPUvYAfYpM95YWRLLP173xVmyZtQrzhTkPpYE35keHSFfqp3HvC",
+    "timestamp": "2025-08-18T15:06:38.000Z",
+    "blockTime": 1755529598,
+    "fee": 1785730,
+    "owner": "GcLcBAs12iBmXsvwNVdfvwQoRQtDrKMQHsPf1pVFVJhB"
+  },
+  {
+    "name": "krewq.skr",
+    "signature": "3cSaRtDVb11GsXNe3KNpdK2TYp5Ftu4JNHvN3cBPbWHfxk3BtUZBRi3YBFVv6EpibvGgVGpgTpNafBPMKeawG9nU",
+    "timestamp": "2025-08-18T15:06:36.000Z",
+    "blockTime": 1755529596,
+    "fee": 1243046,
+    "owner": "GAdJ6PqtiyrbgYzrtinFsfZNezeF7y1DT7AWQHLwj1k8"
+  },
+  {
+    "name": "thechad.skr",
+    "signature": "611bd1BwcPRiqk7sHMxRbzvJXbinudPMuMVYCCvvc8wWPZ4gnxEDvJFySFaswSbZqav5gdyCH5dSratX3iTNH3sY",
+    "timestamp": "2025-08-18T15:05:51.000Z",
+    "blockTime": 1755529551,
+    "fee": 1687219,
+    "owner": "7PQYa8mThcxjYpuG7PRU5TfevnZWrMRKTCHa4U8J1Yru"
+  },
+  {
+    "name": "coinboss.skr",
+    "signature": "5Pghic14nW1AHFHDseR6VMu183ZWBi7sa5r6ya6FBMtiUBzz9K6HvPWeJwWw1xHAHNZaPV9GL3rTZ11S5MTaeuCX",
+    "timestamp": "2025-08-18T15:04:44.000Z",
+    "blockTime": 1755529484,
+    "fee": 1427356,
+    "owner": "47uHomqkMJWbDTg28Fqv3Pt9uZDKwttaCwrgehTwiHxn"
+  },
+  {
+    "name": "indomitable.skr",
+    "signature": "3H4QZAxcFLr2GwQsi9uPa73mwRRryr4nV97rpUhawaSTLHwDn5dbaekHVUgDmatyv8rt1gAZUiUioCYAcgoPvZ9D",
+    "timestamp": "2025-08-18T15:03:49.000Z",
+    "blockTime": 1755529429,
+    "fee": 1539019,
+    "owner": "7N4Zu66Je68NkSoBwm2Yuq7EHNFscGekXDZyXiG9iSPm"
+  },
+  {
+    "name": "keisuke01.skr",
+    "signature": "fMDWEGwU3nCioMrcpSHS1UReHPAaeMXDeSMsYbJpnfeSC4g4Le27q2jsEHSy24CiYGjXYeqgiMENyjrMhWqg9y5",
+    "timestamp": "2025-08-18T15:03:38.000Z",
+    "blockTime": 1755529418,
+    "fee": 1489454,
+    "owner": "G65BpCvo4NTekKYtP5naWYPEvtcHiVCc7WgtaFYz1PAR"
+  },
+  {
+    "name": "uyori.skr",
+    "signature": "3VieznKUhVmMAZXce3ZCtiKso5CCDqEMFjgJQmoSczLnqmbqwyxWoBVkzfznYBu2igSfWJRbHCuFUpUjU1WdSSMt",
+    "timestamp": "2025-08-18T15:01:11.000Z",
+    "blockTime": 1755529271,
+    "fee": 1529866,
+    "owner": "EANHk1acrsXvfHgQhCst2ttp8LB3hGWzPJ3mbc75jY9z"
+  },
+  {
+    "name": "dmwr.skr",
+    "signature": "w58M9ypzb3uYyCuVrcCMR8B42THgP7LZgTVerVdnApTSVjrP8PhX9aNmhLCnwZvfcTrbt2WwCE2R5Z3fU3ieHBn",
+    "timestamp": "2025-08-18T15:00:47.000Z",
+    "blockTime": 1755529247,
+    "fee": 1304434,
+    "owner": "7PY42nqaKXMrX467jikMwJbo4nEPddNXhxwS2qhQ6A5x"
+  },
+  {
+    "name": "ueda1965.skr",
+    "signature": "4ECj3pPg2GZrCNnXQMgHWyWdTWv4JD8GarZ3ggFxdCqSimFLsiasUnxq4TE9p9GYMByY2uVG7aZtEuuip4KDigpy",
+    "timestamp": "2025-08-18T15:00:14.000Z",
+    "blockTime": 1755529214,
+    "fee": 1456168,
+    "owner": "2VSncWV4VNUSPJ9fFpCcSCVsTiALzsrH2CLAweCyoMq5"
+  },
+  {
+    "name": "jltk.skr",
+    "signature": "2Svco7d96JJfb4FZaPaANVfULyjhKmMwZHtxYebXWstCERX6ZgKryDrj9SLgyKrFrJAZVVstoRrP7CFQSLqGYSLn",
+    "timestamp": "2025-08-18T14:57:05.000Z",
+    "blockTime": 1755529025,
+    "fee": 1168554,
+    "owner": "5fWfMZ9oaQH4EUULbwHwFKribaxY2ByrkYoNsUimD8K1"
+  },
+  {
+    "name": "bambrano.skr",
+    "signature": "2QdyNKDfc8uGRQCiNa7dDxMaAK271ZvQWpAoJnHxVCUnMBLqhENWjQoVsuLoSNRBBkNeGr6aAvY9RFupL9zMpMC6",
+    "timestamp": "2025-08-18T14:56:20.000Z",
+    "blockTime": 1755528980,
+    "fee": 1380370,
+    "owner": "2cLyA7d7ZLANSAbKcPvaF4n9i1w2ceUixkqGbVwSF5BQ"
+  },
+  {
+    "name": "mambo.skr",
+    "signature": "5woPU5u6aqWnyeG4ZpaCThgHW3H4BqohUSU9BuZPsb4dG1TzV5uYhtX3sSE7H9YSXjLfwFs87i2HVKhvWxVWHqn8",
+    "timestamp": "2025-08-18T14:56:09.000Z",
+    "blockTime": 1755528969,
+    "fee": 1242212,
+    "owner": "HJp6wz6BtHgnPLpinNnuUKDiBtqvhqJRqzWgDYG5JrNm"
+  },
+  {
+    "name": "alanchankm.skr",
+    "signature": "4FJRHrD3tUveEcF5SLtbAuwTLZzT4zSZKB9msUHxhYK5gGP1E35JMFCBtyzyqyNFxccip7JifLr9zwffs1QijZgj",
+    "timestamp": "2025-08-18T14:55:26.000Z",
+    "blockTime": 1755528926,
+    "fee": 1599581,
+    "owner": "44EiP1QYdZ2WyWLV1M3Y5j8MVpAiBWLJjWqxVn7vuFuv"
+  },
+  {
+    "name": "12567.skr",
+    "signature": "HpBpAJy21QYSTbDnhUZj3fzb29PjaWAon8HG3BB2PfQHorBmqCHTFSH9nPERUAdzneXhv8ps9wv5N8oR7egPu6N",
+    "timestamp": "2025-08-18T14:55:14.000Z",
+    "blockTime": 1755528914,
+    "fee": 1736250,
+    "owner": "68oYC4pdxRFz5BCJ5CLxhJAdk1nXSMYe9JTKwuVkXCYS"
+  },
+  {
+    "name": "profchaos.skr",
+    "signature": "61T8AQEY5sHBQesp2GzL8G1Tbvrm2sAGqQKMTfnxrCf4g7g2q4DieCjgA7Ssj4BG7BdowM3xTbNJ3cNoBt5bsjqQ",
+    "timestamp": "2025-08-13T23:07:20.000Z",
+    "blockTime": 1755126440,
+    "owner": "4kKw2y6S3V1QJboZ67B5ExKaT85oXe4tBfxS6aKBofzK",
+    "fee": 772510
+  },
+  {
+    "name": "cryptoqurious.skr",
+    "signature": "3L8zd5xwZ1kNuoN2w4MmwUKc6YwCHMAKyaNaYg5cpP2GPSFRNAkXsGtb8TePuxU4eEaqCqgF6ekSanuTMjbQ7Aar",
+    "timestamp": "2025-08-13T23:03:41.000Z",
+    "blockTime": 1755126221,
+    "owner": "5wcR6TiNQ1ecxQd7GgFP6PJ11NQ7naxuG8U7AybReQD",
+    "fee": 1838011
+  },
+  {
+    "name": "hirohiro.skr",
+    "signature": "27CQ1LNhzctcncKYwwu95uoR7qK9YBgd8ErVSkqoDnHLTdc2nsuU32b5q2bWeE7oqF81uNTARpoh8NpJmqj4ooub",
+    "timestamp": "2025-08-13T22:56:08.000Z",
+    "blockTime": 1755125768,
+    "owner": "2EPwEpKnUBQGDU8xgdiikEr8xBsCJ7AzAxxBzN3VxSAk",
+    "fee": 1353268
+  },
+  {
+    "name": "dom.skr",
+    "signature": "3YRBEsvmQBFWfTE7ghHV8DXnsPkJRXAMrmA3p9hqFVbbdCDiZuwrLYjqYALjGRDT7iNKWRLX9WPbheBATA6tXPCt",
+    "timestamp": "2025-08-13T22:53:42.000Z",
+    "blockTime": 1755125622,
+    "owner": "HEzSfyzRBshR4pyGvociCmMbpMZ9zzDpptQKyiwuXc7u",
+    "fee": 4805044
+  },
+  {
+    "name": "murad.skr",
+    "signature": "4P4QJGa5xNo7a4GdnyMfF8bpM9qPAVTfB9m8We3bbj8xwocDa5xdZCTGjxx4ciji2LM9ymZPFP1MJEjPruM8A632",
+    "timestamp": "2025-08-13T22:32:36.000Z",
+    "blockTime": 1755124356,
+    "owner": "DVmKYe9xJ38sPYE4AaySM6FBUfP2cUTWJfKEZ6vAZjKW",
+    "fee": 672070
+  },
+  {
+    "name": "shibachan.skr",
+    "signature": "jVAFd2CSA7RQPG2GUzibj92JYz72ANzf7yCbvmCNxr6mLwENTKbQ7EkumVxgLeq7JuJiUwM2HVtbvapdDi3K64H",
+    "timestamp": "2025-08-13T22:32:35.000Z",
+    "blockTime": 1755124355,
+    "owner": "GdZUbLggkrhDFDDQTdN2YVxz5aCmEPcoeBPKeiNW6b6c",
+    "fee": 809075
+  },
+  {
+    "name": "graydawg.skr",
+    "signature": "5odMyWKnbvryy7sFvWCoPSDZUzQNas3yNDz1QKKxVDc3Jr9gdkEMCHCDxwLsB1fxFUquNPFBTMDuk3hD8Y6Qtcdf",
+    "timestamp": "2025-08-13T22:22:38.000Z",
+    "blockTime": 1755123758,
+    "owner": "FjpigeMn4ePjRb75dvpXD2nJxugDmGSCDpFdd2caqWBn",
+    "fee": 894020
+  },
+  {
+    "name": "dydx.skr",
+    "signature": "RmFuTAdvZreukTs9uTtM2uBsjcV4hBcq11D7Hs1u8ePjpS8dSNg8wE963tYw5dim9k9aEXRmRzERL1ufAfRLt2o",
+    "timestamp": "2025-08-13T22:13:35.000Z",
+    "blockTime": 1755123215,
+    "owner": "FDynbv4eSFShsw6EyNFztZeEfezRuPxNdvc16wjGDtTQ",
+    "fee": 622775
+  },
+  {
+    "name": "murakumo.skr",
+    "signature": "2ymbdsWcfAA8HdVPwvPynnuHkanEtL2PZbfbyhRXoifkRLeXrGd8NsB24GFbaeAqCcLTzJTzernuTGR6nLiZg6z",
+    "timestamp": "2025-08-13T22:03:48.000Z",
+    "blockTime": 1755122628,
+    "owner": "FBECsnWBAyqpvwRE5XZxEByoujrBfrSzLX2PJ8EUm9ir",
+    "fee": 1463724
+  },
+  {
+    "name": "yuragineko.skr",
+    "signature": "RMWmx2ESojWrF5PxxX7uY9hAK2gBKP98SyMq6D2ZpGPsFezj7SAegASUEFXZ23YeK24QZ1r2Y6TpWE2kVz42Efe",
+    "timestamp": "2025-08-13T21:58:16.000Z",
+    "blockTime": 1755122296,
+    "owner": "FZY5UR6vy29nap9AWXjujTNg7vJb6jASYLrTQ41JsWAS",
+    "fee": 1543355
+  },
+  {
+    "name": "masamasa.skr",
+    "signature": "3XZPrKYfvXTG7GogjW6joWDKSygnBrvhmKpQJu2mUW2qhopHQKB7JmjtQ9pcRuZythGP9ubz1EaR95Fvsdmx9nC4",
+    "timestamp": "2025-08-13T21:46:59.000Z",
+    "blockTime": 1755121619,
+    "owner": "8ro3uHPmArTqgn3Lp3WUHqA9Pu3iyNHdUdqhQX1abGPp",
+    "fee": 892304
+  },
+  {
+    "name": "eacon.skr",
+    "signature": "5NCxpBjMta3Hz5sGN8Ges419vbgc7xAJWpJK4twD8ZXqwJP6HGf57x8m7AFMTY5EWKCPwNdjdXhHmLFS4CcgeKd2",
+    "timestamp": "2025-08-13T21:46:33.000Z",
+    "blockTime": 1755121593,
+    "owner": "8byMcHYQXdtE5vkjiwdr4TAyL2NYQtKo7pMi4jssgCBU",
+    "fee": 673580
+  },
+  {
+    "name": "masa-.skr",
+    "signature": "t7kTsX4GoRH8cjExRPqDYBFNDeC2iN2UvpHPKqE2n1kjbXByFUJHcBYcye8czRjkURboSTDB6YagmEsLDJcwoHm",
+    "timestamp": "2025-08-13T21:46:04.000Z",
+    "blockTime": 1755121564,
+    "owner": "8ro3uHPmArTqgn3Lp3WUHqA9Pu3iyNHdUdqhQX1abGPp",
+    "fee": 292957
+  },
+  {
+    "name": "odoriko.skr",
+    "signature": "3xRu4V7axbqm5abD5XQVHmta5K69vZqJxSsKu4TVjwFsYG7h9Zi5avLsbHwM5mrTnooKRFQJbg756pxZc35dKhSp",
+    "timestamp": "2025-08-13T21:30:14.000Z",
+    "blockTime": 1755120614,
+    "owner": "ExCsMaSYNAgrtqHnaLEkjE3ywoYJL1cp7Eanvsk8Zx38",
+    "fee": 605308
+  },
+  {
+    "name": "cubelogs.skr",
+    "signature": "2J7KYW6Tdv3o5FZc21ww8nBNTstLEGFo1ThCtsjqWmzasTDUjZtXXTYznJeXSWjstu69pSRs8K8pKpnK6uhebmD2",
+    "timestamp": "2025-08-13T21:20:09.000Z",
+    "blockTime": 1755120009,
+    "owner": "7RB3BDhU35ZXFuETC6LoQQUPCcVL4s4eF3fMAfrt6X5",
+    "fee": 1612312
+  },
+  {
+    "name": "seal.skr",
+    "signature": "4VANcm7MqpUQuTbwrXoz9qNk25q2zQXC1C1UmkSDK2A5DX2V6JuP8VNnje6CcmHbZx7pQRQ2yXJEcYCqMsEtWsRu",
+    "timestamp": "2025-08-13T21:09:41.000Z",
+    "blockTime": 1755119381,
+    "owner": "8EFyraaHVnF5JsZUgfWCkxXiVMZ39oEVqa69FX7yLLMu",
+    "fee": 954889
+  },
+  {
+    "name": "wagmi.skr",
+    "signature": "2t1rAqbPpDwCGn9qzukat1A4GB8ZVU54EptinAFK7sf7gHJ7M442V8qKEgdudnFTjYMBH5c7VBtK1k4hscCfyLey",
+    "timestamp": "2025-08-13T20:38:59.000Z",
+    "blockTime": 1755117539,
+    "owner": "Hs3XgL7YXxZbbyGi3XiBywPzpj6jLEWwG5wEDLvVBFVX",
+    "fee": 861654
+  },
+  {
+    "name": "herby.skr",
+    "signature": "2rdewTavaPnzwHnHr187vcaPVvJhQubbMZpRUCnn5fvmrF5PJBdhJw3YPGicpc9Yyj2kUL1ZcnnwgfccwMMGdPXK",
+    "timestamp": "2025-08-13T20:34:47.000Z",
+    "blockTime": 1755117287,
+    "owner": "DTsLc7fGwT6JgQvWNPLudjcNXBqcqTQAVmz6Jx6fhZSq",
+    "fee": 1003754
+  },
+  {
+    "name": "haku.skr",
+    "signature": "75vFGDGnXsijetEiDjuq7EtNRghUqUppxduTs1A1Vec77u9oGuQp7DF3vGn99RBcb3xNd4qybnY7hkXwpzSE6wT",
+    "timestamp": "2025-08-13T20:01:27.000Z",
+    "blockTime": 1755115287,
+    "owner": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "fee": 502571
+  },
+  {
+    "name": "rich.skr",
+    "signature": "jkbR5939Pb4xTjAUYi3B2vRfDo8Bw7wxfEZRWYXz8sWGQNuA6UPUwwfjLLsd56gEJ1PKQ2DiKnPHUeCffLpxT7R",
+    "timestamp": "2025-08-13T19:25:27.000Z",
+    "blockTime": 1755113127,
+    "owner": "H8tamLpKbECfGvrqfbyAXqubZ14BozWepMJNbBLcKbhv",
+    "fee": 1042224
+  },
+  {
+    "name": "haku.skr",
+    "signature": "4iprd1DeyXFpw1ApkWyu8VGxXbEY4Ymik5xhhzg64kpN2sijX5rm1hWYy5QCQwfwn3NLj8NTR1sSaQYZEqPm2UYN",
+    "timestamp": "2025-08-13T19:10:16.000Z",
+    "blockTime": 1755112216,
+    "owner": "BGMkxhGvkVDKyPapban2xY9RPVGSwsdW4C8URGyrRmic",
+    "fee": 1521289
+  },
+  {
+    "name": "tsunta.skr",
+    "signature": "487u9mqWRwBwSBpHcpjmnUCzpuRBd2Wnq52CDU5GdyxRNb2BaxiJJhANkkk6e6kmTNy1P1TkxkxCbeQJkYWZzwvg",
+    "timestamp": "2025-08-13T18:35:37.000Z",
+    "blockTime": 1755110137,
+    "owner": "HTXrMQbMc3ts3oachFfcd2RWqnstWcxcd6wWZw1iwFRR",
+    "fee": 809066
+  },
+  {
+    "name": "ikkyy.skr",
+    "signature": "67GqKk8NJKL5ysGc8PHH2pQTP5kLFikxzNZjUpMfFexeVHV9tJAEJmmp4t4FvLcJ6fUrtXywQaAESdXokG2WDcM1",
+    "timestamp": "2025-08-13T18:24:02.000Z",
+    "blockTime": 1755109442,
+    "owner": "HnD1uUDYhwLcuMmgokvrKPqFziwbdx9m7UJX6ugLswqb",
+    "fee": 1339950
+  },
+  {
+    "name": "alll60.skr",
+    "signature": "4BVaTrM6TzDMLFMjHJVNLPyk8Bv2cAFm5uYYykJNNURr8ET7Et6E9HLQG1UX6vCpEaurqp72zmaRm217Z79iPxbR",
+    "timestamp": "2025-08-13T18:21:45.000Z",
+    "blockTime": 1755109305,
+    "owner": "qNoe5sjhrYqrEWBP45tmdjquUvhvLUt2CeJ2kVCKdNK",
+    "fee": 1420699
+  },
+  {
+    "name": "dashnode.skr",
+    "signature": "3UHjazRSYMrm2oZC4KLHReHdEPjvVmFhJQ9WsW9cDprAQinbWmZJqYDWGbSRR6i14Q8uvK8xh6JN9aD39KFWaSUt",
+    "timestamp": "2025-08-13T18:02:47.000Z",
+    "blockTime": 1755108167,
+    "owner": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "fee": 391525
+  },
+  {
+    "name": "raccoon.skr",
+    "signature": "5yPRSx32wxjwgPNqhvy6CbiCv4Wn3saysWm53xfBaochfeRbuAwt1n4xzXzivRt1xASwh4zBWy7dFyoEGV7u5gVM",
+    "timestamp": "2025-08-13T18:01:34.000Z",
+    "blockTime": 1755108094,
+    "owner": "3Zo727jhPQdUqEv8LA2jciUzE935bcKvtVcDhGAjDezc",
+    "fee": 1518276
+  },
+  {
+    "name": "zaffy.skr",
+    "signature": "hnw9Hv6Jdxu5ia6T7W67mbhH5NEJJGjjSSatVgdqmbNeopLXMyxqUruZctmP58ZohLVyYdoj5xz9miKEmcFVtFH",
+    "timestamp": "2025-08-13T18:00:25.000Z",
+    "blockTime": 1755108025,
+    "owner": "DWVumYr8CrRkWq1fPEBrZHPphW85ApukAQsQgva9Fikg",
+    "fee": 1296678
+  },
+  {
+    "name": "dashnode.skr",
+    "signature": "5CRSQjVK9Lq5mmmqWFkT1ijGcHDRTinMpch2Mk1hyoAf1VHcQA1TRsravrUSo6djFT8Q88Eo7pWU64sTrWJdBUca",
+    "timestamp": "2025-08-13T17:59:50.000Z",
+    "blockTime": 1755107990,
+    "owner": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "fee": 387893
+  },
+  {
+    "name": "toyota.skr",
+    "signature": "6ckug35U513ftoPpfJdKmhF2Vi3NwhmzxgYy3n4q9TRKxekcULoRrBi5AsEw6PywPbTiRwN6xq6sYHS9QJ6ZuJo",
+    "timestamp": "2025-08-13T17:57:49.000Z",
+    "blockTime": 1755107869,
+    "owner": "GqLuKmvqkybKx2XtAfqB469aKZzqmfimE5sr2GZeFPvv",
+    "fee": 1118440
+  }
+]
