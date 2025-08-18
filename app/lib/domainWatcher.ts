@@ -95,7 +95,7 @@ export class DomainWatcher {
           timestamp: new Date().toISOString(),
           blockTime: sig.blockTime,
           fee: tx?.meta?.fee,
-          accounts: tx?.transaction?.message?.accountKeys?.map((key: any) => key.toBase58())
+          accounts: undefined
         }
 
         this.onNewDomain(domainData)

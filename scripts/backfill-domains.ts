@@ -6,6 +6,16 @@ import * as path from 'path'
 
 const TLDH_PROGRAM_ID = 'TLDHkysf5pCnKsVA4gXpNvmy7psXLPEu4LAdDJthT9S'
 
+interface DomainRegistration {
+  name: string
+  signature: string
+  timestamp: string
+  blockTime?: number
+  fee?: number
+  accounts?: string[]
+  owner?: string // Add missing owner property
+}
+
 interface DomainTransaction {
   signature: string
   blockTime?: number
@@ -14,10 +24,15 @@ interface DomainTransaction {
   domainName?: string // Optional: extracted domain name if we can get it from logs
 }
 
+interface FullTransaction extends DomainTransaction {
+  // Additional properties for full transaction data
+}
+
 interface BackfillState {
   lastProcessedSignature: string | null
   totalTransactions: number
   lastRun: string
+  totalDomains?: number // Add missing property
 }
 
 class DomainBackfill {
@@ -129,7 +144,11 @@ class DomainBackfill {
       }
 
       console.log(` Found ${signatures.length} signatures`)
-      console.log(`📅 Date range: ${new Date(signatures[0]?.blockTime * 1000).toISOString()} to ${new Date(signatures[signatures.length-1]?.blockTime * 1000).toISOString()}`)
+      if (signatures.length > 0) {
+        const firstTime = signatures[0]?.blockTime || Date.now() / 1000
+        const lastTime = signatures[signatures.length-1]?.blockTime || Date.now() / 1000
+        console.log(`📅 Date range: ${new Date(firstTime * 1000).toISOString()} to ${new Date(lastTime * 1000).toISOString()}`)
+      }
 
       const newDomains: DomainRegistration[] = []
       const newTransactions: FullTransaction[] = []
@@ -165,7 +184,7 @@ class DomainBackfill {
             // Store full transaction
             const fullTransaction: FullTransaction = {
               signature: sig.signature,
-              blockTime: sig.blockTime,
+              blockTime: sig.blockTime || undefined, // Fix: handle null case
               timestamp: new Date((sig.blockTime || Date.now() / 1000) * 1000).toISOString(),
               fullTransaction: tx
             }
@@ -184,7 +203,7 @@ class DomainBackfill {
                   name: domainName,
                   signature: sig.signature,
                   timestamp: new Date((sig.blockTime || Date.now() / 1000) * 1000).toISOString(),
-                  blockTime: sig.blockTime,
+                  blockTime: sig.blockTime || undefined, // Fix: handle null case
                   owner: owner,
                   fee: tx?.meta?.fee
                 }
@@ -221,7 +240,7 @@ class DomainBackfill {
         const oldestSignature = signatures[signatures.length - 1].signature
         const newState: BackfillState = {
           lastProcessedSignature: oldestSignature,
-          totalDomains: existingDomains.length,
+          totalTransactions: existingTransactions.length, // Fix: use correct property
           lastRun: new Date().toISOString()
         }
         await this.saveState(newState)
@@ -243,7 +262,7 @@ class DomainBackfill {
       // Update state with the oldest signature we processed
       const newState: BackfillState = {
         lastProcessedSignature: signatures[signatures.length-1]?.signature || state.lastProcessedSignature,
-        totalDomains: uniqueDomains.length,
+        totalTransactions: uniqueTransactions.length, // Fix: use correct property
         lastRun: new Date().toISOString()
       }
       await this.saveState(newState)
@@ -264,13 +283,13 @@ class DomainBackfill {
     }
   }
 
-  private removeDuplicates(transactions: DomainTransaction[]): DomainTransaction[] {
+  private removeDuplicates<T extends { signature: string }>(items: T[], key: keyof T): T[] {
     const seen = new Set<string>()
-    return transactions.filter(transaction => {
-      if (seen.has(transaction.signature)) {
+    return items.filter(item => {
+      if (seen.has(item.signature)) {
         return false
       }
-      seen.add(transaction.signature)
+      seen.add(item.signature)
       return true
     })
   }
