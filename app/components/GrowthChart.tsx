@@ -17,20 +17,12 @@ interface ChartDataPoint {
 }
 
 export default function GrowthChart({ domains, timeRange }: GrowthChartProps) {
-  // Add debugging
-  console.log('📊 GrowthChart received:', { domainsCount: domains.length, timeRange })
-
   // Memoize the chart data calculation to prevent unnecessary recalculations
   const data: ChartDataPoint[] = useMemo(() => {
-    console.log('🔄 Calculating chart data for', domains.length, 'domains')
     
     if (domains.length === 0) {
-      console.log('⚠️ No domains to process')
       return []
     }
-
-    // Log a sample domain to check the data structure
-    console.log('🔍 Sample domain:', domains[0])
     
     // Group domains by date
     const grouped = domains.reduce((acc, domain) => {
@@ -38,8 +30,6 @@ export default function GrowthChart({ domains, timeRange }: GrowthChartProps) {
       acc[date] = (acc[date] || 0) + 1
       return acc
     }, {} as Record<string, number>)
-
-    console.log('📅 Grouped data:', grouped)
 
     // Create data points and sort by date
     const dataPoints = Object.entries(grouped)
@@ -52,9 +42,6 @@ export default function GrowthChart({ domains, timeRange }: GrowthChartProps) {
       cumulative += point.registrations
       point.cumulative = cumulative
     })
-
-    console.log('📈 Final chart data points:', dataPoints)
-    console.log('📈 Total data points:', dataPoints.length)
     
     return dataPoints
   }, [domains]) // Only recalculate when domains change
@@ -70,8 +57,6 @@ export default function GrowthChart({ domains, timeRange }: GrowthChartProps) {
     // Add some padding to the top (10% of max value)
     const paddedMax = Math.ceil(maxValue * 1.1)
     
-    console.log(' Y-axis calculation:', { maxRegistrations, maxCumulative, maxValue, paddedMax })
-    
     return [0, paddedMax]
   }, [data])
 
@@ -82,9 +67,6 @@ export default function GrowthChart({ domains, timeRange }: GrowthChartProps) {
     borderRadius: '6px',
     color: '#00ff00'
   }), [])
-
-  // Add debugging for render
-  console.log('🎨 Rendering chart with', data.length, 'data points, Y-axis domain:', yAxisDomain)
 
   return (
     <div className="growth-chart">
