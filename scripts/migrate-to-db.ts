@@ -29,7 +29,7 @@ async function migrateData() {
       const batch = domains.slice(i, i + batchSize)
       
       await prisma.domain.createMany({
-        data: batch.map(domain => ({
+        data: batch.map((domain: any) => ({
           signature: domain.signature,
           name: domain.name,
           timestamp: domain.timestamp,

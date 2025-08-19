@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
             }
           } catch (error) {
             // Handle unique constraint error gracefully
-            if (error.code === 'P2002') {
+            if (error instanceof Error && 'code' in error && error.code === 'P2002') {
               console.log(`⚠️ Domain already exists (constraint error): ${domain.name}`)
             } else {
               console.error('Error processing new domain:', error)

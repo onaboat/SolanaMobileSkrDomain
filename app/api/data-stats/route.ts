@@ -30,4 +30,20 @@ export async function GET() {
     
     // Group by day
     const dailyCounts = recentDomains.reduce((acc, domain) => {
-      const date
+      const date = new Date(domain.timestamp).toISOString().split('T')[0]
+      acc[date] = (acc[date] || 0) + 1
+      return acc
+    }, {} as Record<string, number>)
+
+    return NextResponse.json({
+      totalCount,
+      oldestDomain: oldestDomain?.timestamp,
+      newestDomain: newestDomain?.timestamp,
+      dailyCounts,
+      recentCount: recentDomains.length
+    })
+  } catch (error) {
+    console.error('Failed to get data stats:', error)
+    return NextResponse.json({ error: 'Failed to get data stats' }, { status: 500 })
+  }
+}
