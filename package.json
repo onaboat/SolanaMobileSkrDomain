@@ -10,7 +10,9 @@
     "backfill:full": "tsx scripts/backfill-domains.ts full",
     "backfill:status": "tsx scripts/backfill-domains.ts status",
     "process:csv": "tsx scripts/process-csv-data.ts",
-    "railway:start": "npm run build && npm start"
+    "fix:owners": "tsx scripts/fix-db-owners.ts",
+    "railway:start": "npm run build && npm start",
+    "debug:owner": "tsx scripts/debug-owner-index.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.14.0",
