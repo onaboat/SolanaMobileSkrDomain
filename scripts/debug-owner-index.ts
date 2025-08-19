@@ -32,21 +32,26 @@ class OwnerIndexDebugger {
         const staticKeys = tx.transaction.message.staticAccountKeys
         console.log('\n🔑 Static Account Keys:')
         staticKeys.forEach((key, index) => {
-          console.log(`[${index}]: ${key}`)
+          const keyString = typeof key === 'string' ? key : key.toBase58()
+          console.log(`[${index}]: ${keyString}`)
         })
         
         // Look for the expected owner address
         const expectedOwner = 'Etp7vf427jqAnheG14UmgokVMQnWUDLxoAJWU1r5154n'
-        const ownerIndex = staticKeys.findIndex(key => key === expectedOwner)
+        const ownerIndex = staticKeys.findIndex(key => {
+          const keyString = typeof key === 'string' ? key : key.toBase58()
+          return keyString === expectedOwner
+        })
         console.log(`\n Expected owner "${expectedOwner}" found at index: ${ownerIndex}`)
         
         // Show all non-program addresses
         console.log('\n👤 Non-program addresses:')
         staticKeys.forEach((key, index) => {
-          if (key !== TLDH_PROGRAM_ID && 
-              key !== '11111111111111111111111111111111' &&
-              key !== 'ComputeBudget111111111111111111111111111111') {
-            console.log(`[${index}]: ${key}`)
+          const keyString = typeof key === 'string' ? key : key.toBase58()
+          if (keyString !== TLDH_PROGRAM_ID && 
+              keyString !== '11111111111111111111111111111111' &&
+              keyString !== 'ComputeBudget111111111111111111111111111111') {
+            console.log(`[${index}]: ${keyString}`)
           }
         })
         
@@ -62,7 +67,8 @@ class OwnerIndexDebugger {
         const accountKeys = tx.transaction.message.accountKeys
         console.log('\n🔑 Account Keys:')
         accountKeys.forEach((key, index) => {
-          console.log(`[${index}]: ${key}`)
+          const keyString = typeof key === 'string' ? key : key.toBase58()
+          console.log(`[${index}]: ${keyString}`)
         })
       }
       
@@ -72,7 +78,7 @@ class OwnerIndexDebugger {
         tx.transaction.message.compiledInstructions.forEach((instruction, index) => {
           console.log(`Instruction ${index}:`, {
             programIdIndex: instruction.programIdIndex,
-            accounts: instruction.accounts,
+            accountKeyIndexes: instruction.accountKeyIndexes, // Fixed: use accountKeyIndexes instead of accounts
             data: instruction.data.slice(0, 20) + '...'
           })
         })
@@ -90,17 +96,19 @@ class OwnerIndexDebugger {
       // For versioned transactions, look at staticAccountKeys
       if ('staticAccountKeys' in tx.transaction.message) {
         const staticKeys = tx.transaction.message.staticAccountKeys
-        if (Array.isArray(staticKeys) && staticKeys.length > 1) {
-          // Based on your Dune query, owner is at position 2 (1-based), so use index 1 (0-based)
-          return staticKeys[1]
+        if (Array.isArray(staticKeys) && staticKeys.length > 7) {
+          // Based on the debug output, owner is at index 7
+          const key = staticKeys[7]
+          return typeof key === 'string' ? key : key.toBase58()
         }
       }
       
       // For legacy transactions, try accountKeys
       if ('accountKeys' in tx.transaction.message) {
         const accountKeys = tx.transaction.message.accountKeys
-        if (Array.isArray(accountKeys) && accountKeys.length > 1) {
-          return accountKeys[1]
+        if (Array.isArray(accountKeys) && accountKeys.length > 7) {
+          const key = accountKeys[7]
+          return typeof key === 'string' ? key : key.toBase58()
         }
       }
     } catch (error) {

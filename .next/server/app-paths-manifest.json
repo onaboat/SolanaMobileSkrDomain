@@ -2,8 +2,8 @@
   "/_not-found": "app/_not-found.js",
   "/api/data-stats/route": "app/api/data-stats/route.js",
   "/api/domains/route": "app/api/domains/route.js",
-  "/api/test-db/route": "app/api/test-db/route.js",
-  "/api/health/route": "app/api/health/route.js",
   "/api/websocket/route": "app/api/websocket/route.js",
+  "/api/health/route": "app/api/health/route.js",
+  "/api/test-db/route": "app/api/test-db/route.js",
   "/page": "app/page.js"
 }
