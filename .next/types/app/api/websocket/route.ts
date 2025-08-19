@@ -1,4 +1,4 @@
-// File: /Users/development/Documents/Code/domain/app/api/websocket/route.ts
+// File: /Users/development/Documents/Code/SolanaMobileSkrDomain/app/api/websocket/route.ts
 import * as entry from '../../../../../app/api/websocket/route.js'
 import type { NextRequest } from 'next/server.js'
 

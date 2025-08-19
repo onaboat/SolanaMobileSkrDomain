@@ -55,14 +55,23 @@ export async function GET(request: NextRequest) {
               await saveDomainsToFile(updatedDomains)
               
               console.log(`✅ New domain saved: ${domain.name}`)
+              
+              // Broadcast new domain to all connections (ONLY if it's actually new)
+              connections.forEach(conn => {
+                try {
+                  conn.write(`data: ${JSON.stringify({ type: 'newDomain', domain })}\n\n`)
+                } catch (error) {
+                  console.error('Error sending to connection:', error)
+                }
+              })
             }
             
-            // Broadcast new domain to all connections
+            // Broadcast stats update to all connections
             connections.forEach(conn => {
               try {
-                conn.write(`data: ${JSON.stringify({ type: 'newDomain', domain })}\n\n`)
+                conn.write(`data: ${JSON.stringify({ type: 'stats', stats })}\n\n`)
               } catch (error) {
-                console.error('Error sending to connection:', error)
+                console.error('Error sending stats to connection:', error)
               }
             })
           } catch (error) {

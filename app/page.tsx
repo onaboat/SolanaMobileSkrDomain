@@ -1,7 +1,29 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import type { DomainRegistration } from './types'
+import FilterPresets, { type TimeRange } from './components/FilterPresets'
+import GrowthChart from './components/GrowthChart'
+import RegionalCards from './components/RegionalCards'
+
+// Move outside component to prevent recreation
+const filterByTimeRange = (domains: DomainRegistration[], timeRange: TimeRange): DomainRegistration[] => {
+  const now = new Date()
+  return domains.filter(domain => {
+    const domainDate = new Date(domain.timestamp)
+    
+    switch (timeRange) {
+      case '7d':
+        return now.getTime() - domainDate.getTime() <= 7 * 24 * 60 * 60 * 1000
+      case '30d':
+        return now.getTime() - domainDate.getTime() <= 30 * 24 * 60 * 60 * 1000
+      case '90d':
+        return now.getTime() - domainDate.getTime() <= 90 * 24 * 60 * 60 * 1000
+      case 'all':
+        return true
+    }
+  })
+}
 
 export default function Home() {
   const [domains, setDomains] = useState<DomainRegistration[]>([])
@@ -15,14 +37,36 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentTime, setCurrentTime] = useState('')
   const [flashTrigger, setFlashTrigger] = useState(false)
+  const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>('7d')
+
+  // Use refs to track connections and prevent multiple setups
+  const eventSourceRef = useRef<EventSource | null>(null)
+  const timeIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const isInitializedRef = useRef(false)
+
+  // Apply time filter to all domains
+  const timeFilteredDomains = useMemo(() => {
+    return filterByTimeRange(domains, selectedTimeRange)
+  }, [domains, selectedTimeRange])
+
+  // Apply search filter to time-filtered domains
+  const filteredDomains = useMemo(() => {
+    return timeFilteredDomains.filter(domain =>
+      domain.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [timeFilteredDomains, searchTerm])
 
   useEffect(() => {
+    // Prevent multiple initializations
+    if (isInitializedRef.current) return
+    isInitializedRef.current = true
+
     // Update time every second
     const updateTime = () => {
       setCurrentTime(new Date().toLocaleTimeString())
     }
     updateTime()
-    const interval = setInterval(updateTime, 1000)
+    timeIntervalRef.current = setInterval(updateTime, 1000)
 
     // Load existing domains
     const loadDomains = async () => {
@@ -39,17 +83,35 @@ export default function Home() {
 
     // Start WebSocket connection for real-time updates
     const eventSource = new EventSource('/api/websocket')
+    eventSourceRef.current = eventSource
     
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data)
         
         if (data.type === 'newDomain') {
-          // Add to new domains list for green indicator
-          setNewDomains(prev => [data.domain, ...prev.slice(0, 9)]) // Keep last 10
+          console.log('Received new domain:', data.domain.name)
           
-          // Add to main domains list
-          setDomains(prev => [data.domain, ...prev]) // Add to main list
+          // Add new domain to the state (no reload needed)
+          setDomains(prev => {
+            const exists = prev.some(d => d.signature === data.domain.signature)
+            if (exists) {
+              console.log('Domain already exists, skipping:', data.domain.name)
+              return prev
+            }
+            console.log('Adding new domain:', data.domain.name)
+            return [data.domain, ...prev]
+          })
+          
+          // Add to new domains list for green indicator (only if it matches current time filter)
+          const matchesTimeFilter = filterByTimeRange([data.domain], selectedTimeRange).length > 0
+          if (matchesTimeFilter) {
+            setNewDomains(prev => {
+              const exists = prev.some(d => d.signature === data.domain.signature)
+              if (exists) return prev
+              return [data.domain, ...prev.slice(0, 9)] // Keep last 10
+            })
+          }
           
           // Add flash animation class to the new domain
           setTimeout(() => {
@@ -69,7 +131,7 @@ export default function Home() {
           // Keep the new domain highlighted for 30 seconds
           setTimeout(() => {
             setNewDomains(prev => prev.filter(d => d.signature !== data.domain.signature))
-          }, 50000) // Change this number to increase time
+          }, 50000)
         } else if (data.type === 'stats') {
           setWatcherStats(data.stats)
         }
@@ -100,17 +162,16 @@ export default function Home() {
     startWatcher()
 
     return () => {
-      clearInterval(interval)
-      eventSource.close()
+      if (timeIntervalRef.current) {
+        clearInterval(timeIntervalRef.current)
+      }
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close()
+      }
       // Stop watcher on unmount
       fetch('/api/websocket?action=stop').catch(console.error)
     }
-  }, [])
-
-  // Filter domains based on search term
-  const filteredDomains = domains.filter(domain =>
-    domain.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  }, []) // Remove selectedTimeRange from dependencies
 
   return (
     <div className="domains-page">
@@ -154,6 +215,21 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Filter Presets */}
+      <FilterPresets 
+        selectedRange={selectedTimeRange}
+        onRangeChange={setSelectedTimeRange}
+      />
+      <div className="filter-status">
+        Showing {timeFilteredDomains.length} domains from {selectedTimeRange === '7d' ? 'last 7 days' : selectedTimeRange === '30d' ? 'last 30 days' : selectedTimeRange === '90d' ? 'last 90 days' : 'all time'}
+      </div>
+
+      {/* Charts Container */}
+      <div className="charts-container">
+        <GrowthChart domains={timeFilteredDomains} timeRange={selectedTimeRange} />
+        <RegionalCards domains={timeFilteredDomains} timeRange={selectedTimeRange} />
+      </div>
+
       {/* Search Bar */}
       <div className="search-container">
         <div className="search-input-wrapper">
@@ -167,13 +243,13 @@ export default function Home() {
         </div>
         {searchTerm && (
           <div className="search-results">
-            Found {filteredDomains.length} of {domains.length} domains
+            Found {filteredDomains.length} of {timeFilteredDomains.length} domains
           </div>
         )}
       </div>
       
       {/* Domain List */}
-      {domains.length > 0 && (
+      {filteredDomains.length > 0 && (
         <div className="domain-list-container">
           <div className="domain-grid">
             {filteredDomains.map((domain, index) => (

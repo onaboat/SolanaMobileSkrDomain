@@ -1,4 +1,4 @@
-// File: /Users/development/Documents/Code/domain/app/api/domains/route.ts
+// File: /Users/development/Documents/Code/SolanaMobileSkrDomain/app/api/domains/route.ts
 import * as entry from '../../../../../app/api/domains/route.js'
 import type { NextRequest } from 'next/server.js'
 

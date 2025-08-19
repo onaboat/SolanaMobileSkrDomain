@@ -9,16 +9,20 @@
     "lint": "next lint",
     "backfill:full": "tsx scripts/backfill-domains.ts full",
     "backfill:status": "tsx scripts/backfill-domains.ts status",
+    "process:csv": "tsx scripts/process-csv-data.ts",
     "railway:start": "npm run build && npm start"
   },
   "dependencies": {
+    "@prisma/client": "^6.14.0",
     "@solana/web3.js": "^1.95.3",
     "clsx": "^2.0.0",
     "dotenv": "^16.4.5",
     "lucide-react": "^0.294.0",
     "next": "14.0.4",
+    "prisma": "^6.14.0",
     "react": "^18",
     "react-dom": "^18",
+    "recharts": "^2.8.0",
     "tailwind-merge": "^2.0.0"
   },
   "devDependencies": {
