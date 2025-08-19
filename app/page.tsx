@@ -27,6 +27,9 @@ export default function Home() {
   })
   const [isLoading, setIsLoading] = useState(true) // Add loading state
 
+  // Add a loading state ref to prevent multiple simultaneous loads
+  const isLoadingRef = useRef(false)
+
   // Use refs to track connections and prevent multiple setups
   const eventSourceRef = useRef<EventSource | null>(null)
   const timeIntervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -41,8 +44,15 @@ export default function Home() {
 
   // Load domains from API
   const loadDomains = async () => {
+    // Prevent multiple simultaneous loads
+    if (isLoadingRef.current) {
+      console.log('🔄 Already loading domains, skipping...')
+      return
+    }
+    
     try {
-      setIsLoading(true) // Set loading to true
+      isLoadingRef.current = true
+      setIsLoading(true)
       console.log('🔄 Loading domains for timeRange:', selectedTimeRange)
       
       // Load more data for charts (up to 10,000 domains)
@@ -70,6 +80,7 @@ export default function Home() {
       console.error('❌ Failed to load domains:', error)
     } finally {
       setIsLoading(false) // Set loading to false
+      isLoadingRef.current = false
     }
   }
 
@@ -197,7 +208,9 @@ export default function Home() {
                 }, 50000)
               } else if (data.type === 'reload') {
                 console.log('🔄 Reloading domains from database...')
-                loadDomains()
+                if (!isLoadingRef.current) {
+                  loadDomains()
+                }
               } else if (data.type === 'stats') {
                 setWatcherStats(data.stats)
               }

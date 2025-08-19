@@ -1,1 +1,1 @@
-{"/_not-found":"/_not-found","/api/domains/route":"/api/domains","/api/test-db/route":"/api/test-db","/page":"/","/api/websocket/route":"/api/websocket","/api/data-stats/route":"/api/data-stats","/api/health/route":"/api/health"}
+{"/_not-found":"/_not-found","/api/data-stats/route":"/api/data-stats","/api/domains/route":"/api/domains","/api/test-db/route":"/api/test-db","/api/health/route":"/api/health","/api/websocket/route":"/api/websocket","/page":"/"}
