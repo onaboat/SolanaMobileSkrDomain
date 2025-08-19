@@ -1616,3 +1616,70 @@ span.flash-animation {
   border-radius: 4px;
   border: 1px solid #333;
 }
+
+.loading-charts {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.loading-spinner {
+  color: #00ff00;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading-spinner::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid #333;
+  border-top: 2px solid #00ff00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: #666;
+  font-size: 16px;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.new-domains-section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid #00ff00;
+  border-radius: 8px;
+}
+
+.section-title {
+  color: #00ff00;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.more-domains-indicator {
+  text-align: center;
+  color: #666;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}

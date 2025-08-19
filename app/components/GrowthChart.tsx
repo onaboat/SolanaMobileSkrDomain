@@ -17,14 +17,29 @@ interface ChartDataPoint {
 }
 
 export default function GrowthChart({ domains, timeRange }: GrowthChartProps) {
+  // Add debugging
+  console.log('📊 GrowthChart received:', { domainsCount: domains.length, timeRange })
+
   // Memoize the chart data calculation to prevent unnecessary recalculations
   const data: ChartDataPoint[] = useMemo(() => {
+    console.log('🔄 Calculating chart data for', domains.length, 'domains')
+    
+    if (domains.length === 0) {
+      console.log('⚠️ No domains to process')
+      return []
+    }
+
+    // Log a sample domain to check the data structure
+    console.log('🔍 Sample domain:', domains[0])
+    
     // Group domains by date
     const grouped = domains.reduce((acc, domain) => {
       const date = new Date(domain.timestamp).toISOString().split('T')[0]
       acc[date] = (acc[date] || 0) + 1
       return acc
     }, {} as Record<string, number>)
+
+    console.log('📅 Grouped data:', grouped)
 
     // Create data points and sort by date
     const dataPoints = Object.entries(grouped)
@@ -38,8 +53,27 @@ export default function GrowthChart({ domains, timeRange }: GrowthChartProps) {
       point.cumulative = cumulative
     })
 
+    console.log('📈 Final chart data points:', dataPoints)
+    console.log('📈 Total data points:', dataPoints.length)
+    
     return dataPoints
   }, [domains]) // Only recalculate when domains change
+
+  // Calculate dynamic Y-axis domain based on actual data
+  const yAxisDomain = useMemo(() => {
+    if (data.length === 0) return [0, 100]
+    
+    const maxRegistrations = Math.max(...data.map(d => d.registrations))
+    const maxCumulative = Math.max(...data.map(d => d.cumulative))
+    const maxValue = Math.max(maxRegistrations, maxCumulative)
+    
+    // Add some padding to the top (10% of max value)
+    const paddedMax = Math.ceil(maxValue * 1.1)
+    
+    console.log(' Y-axis calculation:', { maxRegistrations, maxCumulative, maxValue, paddedMax })
+    
+    return [0, paddedMax]
+  }, [data])
 
   // Memoize the tooltip content style to prevent object recreation
   const tooltipStyle = useMemo(() => ({
@@ -49,36 +83,47 @@ export default function GrowthChart({ domains, timeRange }: GrowthChartProps) {
     color: '#00ff00'
   }), [])
 
+  // Add debugging for render
+  console.log('🎨 Rendering chart with', data.length, 'data points, Y-axis domain:', yAxisDomain)
+
   return (
     <div className="growth-chart">
       <h3 className="chart-title">Domain Registration Growth</h3>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-          <XAxis 
-            dataKey="date" 
-            tick={{ fill: '#00ff00', fontSize: 12 }}
-            axisLine={{ stroke: '#333' }}
-          />
-          <YAxis 
-            tick={{ fill: '#00ff00', fontSize: 12 }}
-            axisLine={{ stroke: '#333' }}
-          />
-          <Tooltip contentStyle={tooltipStyle} />
-          <Line 
-            dataKey="registrations" 
-            stroke="#00ff00" 
-            strokeWidth={2}
-            dot={{ fill: '#00ff00', strokeWidth: 2, r: 4 }}
-          />
-          <Line 
-            dataKey="cumulative" 
-            stroke="#00aa00" 
-            strokeWidth={2}
-            dot={{ fill: '#00aa00', strokeWidth: 2, r: 4 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      {data.length === 0 ? (
+        <div className="no-data">No data available for the selected time range</div>
+      ) : (
+        <div style={{ width: '100%', height: '300px' }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+              <XAxis 
+                dataKey="date" 
+                tick={{ fill: '#00ff00', fontSize: 12 }}
+                axisLine={{ stroke: '#333' }}
+              />
+              <YAxis 
+                tick={{ fill: '#00ff00', fontSize: 12 }}
+                axisLine={{ stroke: '#333' }}
+                domain={yAxisDomain}
+                allowDecimals={false}
+              />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Line 
+                dataKey="registrations" 
+                stroke="#00ff00" 
+                strokeWidth={2}
+                dot={{ fill: '#00ff00', strokeWidth: 2, r: 4 }}
+              />
+              <Line 
+                dataKey="cumulative" 
+                stroke="#00aa00" 
+                strokeWidth={2}
+                dot={{ fill: '#00aa00', strokeWidth: 2, r: 4 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   )
 }
