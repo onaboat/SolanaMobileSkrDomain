@@ -65,15 +65,6 @@ export async function GET(request: NextRequest) {
                 }
               })
             }
-            
-            // Broadcast stats update to all connections
-            connections.forEach(conn => {
-              try {
-                conn.write(`data: ${JSON.stringify({ type: 'stats', stats })}\n\n`)
-              } catch (error) {
-                console.error('Error sending stats to connection:', error)
-              }
-            })
           } catch (error) {
             console.error('Error processing new domain:', error)
           }
