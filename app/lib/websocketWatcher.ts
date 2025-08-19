@@ -237,27 +237,27 @@ export class WebSocketWatcher {
       // For versioned transactions, look at staticAccountKeys
       if ('staticAccountKeys' in tx.transaction.message) {
         const staticKeys = tx.transaction.message.staticAccountKeys
-        if (Array.isArray(staticKeys) && staticKeys.length > 2) {
-          // Based on your Dune query, owner is at index 2
-          return staticKeys[2]
+        if (Array.isArray(staticKeys) && staticKeys.length > 1) {
+          // Based on your Dune query, owner is at position 2 (1-based), so use index 1 (0-based)
+          return staticKeys[1]
         }
       }
       
       // For legacy transactions, try accountKeys
       if ('accountKeys' in tx.transaction.message) {
         const accountKeys = tx.transaction.message.accountKeys
-        if (Array.isArray(accountKeys) && accountKeys.length > 2) {
-          return accountKeys[2]
+        if (Array.isArray(accountKeys) && accountKeys.length > 1) {
+          return accountKeys[1]
         }
       }
       
       // Try to find the owner from the account keys array
       const accountKeys = this.getAccountKeys(tx)
-      if (accountKeys.length > 2) {
-        return accountKeys[2]
+      if (accountKeys.length > 1) {
+        return accountKeys[1]
       }
       
-      // If we can't find it at index 2, try to find it in the accounts
+      // If we can't find it at index 1, try to find it in the accounts
       for (let i = 0; i < accountKeys.length; i++) {
         const key = accountKeys[i]
         // Skip program IDs and known addresses
