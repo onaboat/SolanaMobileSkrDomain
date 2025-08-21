@@ -12,7 +12,8 @@
     "process:csv": "tsx scripts/process-csv-data.ts",
     "fix:owners": "tsx scripts/fix-db-owners.ts",
     "railway:start": "npm run build && npm start",
-    "debug:owner": "tsx scripts/debug-owner-index.ts"
+    "debug:owner": "tsx scripts/debug-owner-index.ts",
+    "show:oldest": "tsx scripts/show-oldest-domains.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.14.0",
