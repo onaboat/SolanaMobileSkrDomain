@@ -1,14 +1,10 @@
-# SKR Domain Watcher
+# Solana Mobile SKR Domain Watcher
 
 An interactive dashboard for exploring .skr domain registrations on Solana, featuring real-time updates, search functionality, and detailed domain ownership tracking with visual analytics.
 
 ## Features
 
 - 🔍 **Real-time monitoring** of .skr domain registrations
-- 🖥️ **Authentic terminal interface** with command-line interaction
-- 📊 **SETI-style searching animations** with progress bars and scanning effects
-- 💾 **Local data storage** with incremental backfill capability
-- ⚙️ **Admin backfill scripts** for historical data collection
 - 🔗 **Transaction links** to Solscan
 
 ## Setup
