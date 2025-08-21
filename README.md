@@ -1,6 +1,6 @@
 # SKR Domain Watcher
 
-A Next.js application for monitoring .skr domain registrations on the Solana Seeker network with SETI-style searching animations.
+An interactive dashboard for exploring .skr domain registrations on Solana, featuring real-time updates, search functionality, and detailed domain ownership tracking with visual analytics.
 
 ## Features
 
