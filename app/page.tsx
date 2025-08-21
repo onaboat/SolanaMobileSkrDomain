@@ -1,7 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import type { DomainRegistration } from './types'
+import FilterPresets, { type TimeRange } from './components/FilterPresets'
+import GrowthChart from './components/GrowthChart'
+import RegionalCards from './components/RegionalCards'
 
 export default function Home() {
   const [domains, setDomains] = useState<DomainRegistration[]>([])
@@ -15,102 +18,271 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentTime, setCurrentTime] = useState('')
   const [flashTrigger, setFlashTrigger] = useState(false)
+  const [selectedTimeRange, setSelectedTimeRange] = useState<TimeRange>('7d')
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 100,
+    total: 0,
+    totalPages: 0
+  })
+  const [isLoading, setIsLoading] = useState(true) // Add loading state
+
+  // Add a loading state ref to prevent multiple simultaneous loads
+  const isLoadingRef = useRef(false)
+
+  // Use refs to track connections and prevent multiple setups
+  const eventSourceRef = useRef<EventSource | null>(null)
+  const timeIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const isInitializedRef = useRef(false)
+
+  // Apply search filter to all domains
+  const filteredDomains = useMemo(() => {
+    return domains.filter(domain =>
+      domain.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [domains, searchTerm])
+
+  // Load domains from API
+  const loadDomains = async () => {
+    // Prevent multiple simultaneous loads
+    if (isLoadingRef.current) {
+      console.log('🔄 Already loading domains, skipping...')
+      return
+    }
+    
+    try {
+      isLoadingRef.current = true
+      setIsLoading(true)
+      console.log('🔄 Loading domains for timeRange:', selectedTimeRange)
+      
+      // Load more data for charts (up to 10,000 domains)
+      const response = await fetch(`/api/domains?timeRange=${selectedTimeRange}&limit=10000&forChart=true`)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      console.log('📊 API Response:', { 
+        domainsCount: data.domains?.length || 0, 
+        pagination: data.pagination,
+        error: data.error 
+      })
+      
+      if (data.error) {
+        console.error('❌ API Error:', data.error)
+        return
+      }
+      
+      setDomains(data.domains || [])
+      setPagination(data.pagination || { page: 1, limit: 100, total: 0, totalPages: 0 })
+    } catch (error) {
+      console.error('❌ Failed to load domains:', error)
+    } finally {
+      setIsLoading(false) // Set loading to false
+      isLoadingRef.current = false
+    }
+  }
 
   useEffect(() => {
+    // Prevent multiple initializations
+    if (isInitializedRef.current) return
+    isInitializedRef.current = true
+
     // Update time every second
     const updateTime = () => {
       setCurrentTime(new Date().toLocaleTimeString())
     }
     updateTime()
-    const interval = setInterval(updateTime, 1000)
+    timeIntervalRef.current = setInterval(updateTime, 1000)
 
-    // Load existing domains
-    const loadDomains = async () => {
-      try {
-        const response = await fetch('/api/domains')
-        const data = await response.json()
-        setDomains(data.domains || [])
-      } catch (error) {
-        console.error('Failed to load domains:', error)
-      }
-    }
-    
+    // Load initial domains
     loadDomains()
 
-    // Start WebSocket connection for real-time updates
-    const eventSource = new EventSource('/api/websocket')
-    
-    eventSource.onmessage = (event) => {
+    // Start the watcher first, then establish WebSocket connection
+    const initializeWatcher = async () => {
       try {
-        const data = JSON.parse(event.data)
-        
-        if (data.type === 'newDomain') {
-          // Add to new domains list for green indicator
-          setNewDomains(prev => [data.domain, ...prev.slice(0, 9)]) // Keep last 10
-          
-          // Add to main domains list
-          setDomains(prev => [data.domain, ...prev]) // Add to main list
-          
-          // Add flash animation class to the new domain
-          setTimeout(() => {
-            const domainElement = document.querySelector(`[data-signature="${data.domain.signature}"]`)
-            if (domainElement) {
-              domainElement.classList.add('flash-animation')
-              setTimeout(() => {
-                domainElement.classList.remove('flash-animation')
-              }, 2500)
-            }
-          }, 100)
-          
-          // Trigger flash animation for status indicators
-          setFlashTrigger(true)
-          setTimeout(() => setFlashTrigger(false), 2500)
-          
-          // Keep the new domain highlighted for 30 seconds
-          setTimeout(() => {
-            setNewDomains(prev => prev.filter(d => d.signature !== data.domain.signature))
-          }, 50000) // Change this number to increase time
-        } else if (data.type === 'stats') {
-          setWatcherStats(data.stats)
-        }
-      } catch (error) {
-        console.error('Error parsing SSE data:', error)
-      }
-    }
-
-    eventSource.onerror = (error) => {
-      console.error('SSE connection error:', error)
-      setWatcherStats(prev => ({ ...prev, isConnected: false }))
-    }
-
-    // Start the watcher
-    const startWatcher = async () => {
-      try {
+        console.log('🚀 Starting domain watcher...')
         const response = await fetch('/api/websocket?action=start')
         const result = await response.json()
         if (result.success) {
           setIsWatching(true)
           setWatcherStats(prev => ({ ...prev, isConnected: true }))
+          console.log('✅ Domain watcher started successfully')
+          
+          // Now establish WebSocket connection after watcher is started
+          const eventSource = new EventSource('/api/websocket')
+          eventSourceRef.current = eventSource
+          
+          eventSource.onopen = () => {
+            console.log('🔌 WebSocket connection opened successfully')
+          }
+          
+          eventSource.onmessage = (event) => {
+            console.log('📨 Raw WebSocket message received:', event.data)
+            try {
+              const data = JSON.parse(event.data)
+              console.log('📨 Parsed WebSocket message:', data)
+              
+              if (data.type === 'newDomain') {
+                console.log('🎯 Received new domain:', data.domain.name)
+                console.log('🎯 Current domains count before update:', domains.length)
+                
+                // Force a state update by creating a new array
+                setDomains(prev => {
+                  const exists = prev.some(d => d.signature === data.domain.signature)
+                  if (exists) {
+                    console.log('⚠️ Domain already exists in state, skipping:', data.domain.name)
+                    return prev
+                  }
+                  console.log('✅ Adding new domain to state:', data.domain.name)
+                  console.log('✅ New domains count will be:', prev.length + 1)
+                  
+                  // Create a new array to ensure React detects the change
+                  const newDomains = [data.domain, ...prev]
+                  console.log('✅ New domains array length:', newDomains.length)
+                  return newDomains
+                })
+                
+                // Force a re-render by updating a separate state
+                setFlashTrigger(prev => !prev)
+                
+                // Add to new domains list for green indicator (only if it matches current time filter)
+                const domainDate = new Date(data.domain.timestamp)
+                const now = new Date()
+                let shouldShow = false
+
+                switch (selectedTimeRange) {
+                  case '3d':
+                    shouldShow = now.getTime() - domainDate.getTime() <= 3 * 24 * 60 * 60 * 1000
+                    break
+                  case '5d':
+                    shouldShow = now.getTime() - domainDate.getTime() <= 5 * 24 * 60 * 60 * 1000
+                    break
+                  case '7d':
+                    shouldShow = now.getTime() - domainDate.getTime() <= 7 * 24 * 60 * 60 * 1000
+                    break
+                  case '10d':
+                    shouldShow = now.getTime() - domainDate.getTime() <= 10 * 24 * 60 * 60 * 1000
+                    break
+                  case '14d':
+                    shouldShow = now.getTime() - domainDate.getTime() <= 14 * 24 * 60 * 60 * 1000
+                    break
+                  case '21d':
+                    shouldShow = now.getTime() - domainDate.getTime() <= 21 * 24 * 60 * 60 * 1000
+                    break
+                  case '30d':
+                    shouldShow = now.getTime() - domainDate.getTime() <= 30 * 24 * 60 * 60 * 1000
+                    break
+                  case 'all':
+                    shouldShow = true
+                    break
+                }
+
+                if (shouldShow) {
+                  setNewDomains(prev => {
+                    const exists = prev.some(d => d.signature === data.domain.signature)
+                    if (exists) return prev
+                    return [data.domain, ...prev.slice(0, 9)] // Keep last 10
+                  })
+                }
+                
+                // Add flash animation class to the new domain
+                setTimeout(() => {
+                  const domainElement = document.querySelector(`[data-signature="${data.domain.signature}"]`)
+                  if (domainElement) {
+                    domainElement.classList.add('flash-animation')
+                    setTimeout(() => {
+                      domainElement.classList.remove('flash-animation')
+                    }, 2500)
+                  }
+                }, 100)
+                
+                // Trigger flash animation for status indicators
+                setFlashTrigger(true)
+                setTimeout(() => setFlashTrigger(false), 2500)
+                
+                // Keep the new domain highlighted for 30 seconds
+                setTimeout(() => {
+                  setNewDomains(prev => prev.filter(d => d.signature !== data.domain.signature))
+                }, 50000)
+              } else if (data.type === 'reload') {
+                console.log('🔄 Reloading domains from database...')
+                if (!isLoadingRef.current) {
+                  loadDomains()
+                }
+              } else if (data.type === 'stats') {
+                setWatcherStats(data.stats)
+              }
+            } catch (error) {
+              console.error('Error parsing SSE data:', error)
+            }
+          }
+
+          eventSource.onerror = (error) => {
+            console.error('❌ WebSocket connection error:', error)
+            setWatcherStats(prev => ({ ...prev, isConnected: false }))
+            
+            // Try to reconnect after 5 seconds
+            setTimeout(() => {
+              console.log('🔄 Attempting to reconnect WebSocket...')
+              if (eventSourceRef.current) {
+                eventSourceRef.current.close()
+              }
+              const newEventSource = new EventSource('/api/websocket')
+              eventSourceRef.current = newEventSource
+            }, 5000)
+          }
+        } else {
+          console.error('❌ Failed to start watcher:', result)
         }
       } catch (error) {
-        console.error('Failed to start watcher:', error)
+        console.error('❌ Failed to start watcher:', error)
       }
     }
 
-    startWatcher()
+    initializeWatcher()
 
     return () => {
-      clearInterval(interval)
-      eventSource.close()
+      if (timeIntervalRef.current) {
+        clearInterval(timeIntervalRef.current)
+      }
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close()
+      }
       // Stop watcher on unmount
       fetch('/api/websocket?action=stop').catch(console.error)
     }
-  }, [])
+  }, []) // Remove selectedTimeRange from dependencies
 
-  // Filter domains based on search term
-  const filteredDomains = domains.filter(domain =>
-    domain.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Reload domains when time range changes
+  useEffect(() => {
+    loadDomains()
+  }, [selectedTimeRange])
+
+  useEffect(() => {
+    if (domains.length > 0) {
+      // Test chart data calculation
+      const testData = domains.reduce((acc, domain) => {
+        const date = new Date(domain.timestamp).toISOString().split('T')[0]
+        acc[date] = (acc[date] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+      
+      console.log('📊 Test chart data:', testData)
+      console.log('🧪 Test chart data entries:', Object.entries(testData))
+    }
+  }, [domains])
+
+  // Add this useEffect to monitor state changes
+  useEffect(() => {
+    console.log('🔄 Domains state updated:', {
+      totalDomains: domains.length,
+      newDomainsCount: newDomains.length,
+      filteredDomainsCount: filteredDomains.length,
+      firstFewDomains: domains.slice(0, 3).map(d => d.name)
+    })
+  }, [domains, newDomains, filteredDomains])
 
   return (
     <div className="domains-page">
@@ -154,6 +326,42 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Filter Presets */}
+      <FilterPresets 
+        selectedRange={selectedTimeRange}
+        onRangeChange={setSelectedTimeRange}
+      />
+      <div className="filter-status">
+        {isLoading ? (
+          <span>Loading domains...</span>
+        ) : (
+          `Showing ${domains.length} domains from ${
+            selectedTimeRange === '3d' ? 'past 3 days' :
+            selectedTimeRange === '5d' ? 'past 5 days' :
+            selectedTimeRange === '7d' ? 'past 7 days' : 
+            selectedTimeRange === '10d' ? 'past 10 days' : 
+            selectedTimeRange === '14d' ? 'past 14 days' : 
+            selectedTimeRange === '21d' ? 'past 21 days' : 
+            selectedTimeRange === '30d' ? 'past 30 days' : 
+            'all time'
+          }`
+        )}
+      </div>
+
+      {/* Charts Container */}
+      <div className="charts-container">
+        {isLoading ? (
+          <div className="loading-charts">
+            <div className="loading-spinner">Loading charts...</div>
+          </div>
+        ) : (
+          <>
+            <GrowthChart domains={domains} timeRange={selectedTimeRange} />
+            <RegionalCards domains={domains} timeRange={selectedTimeRange} />
+          </>
+        )}
+      </div>
+
       {/* Search Bar */}
       <div className="search-container">
         <div className="search-input-wrapper">
@@ -163,20 +371,22 @@ export default function Home() {
             placeholder="Search domain names..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            disabled={isLoading}
           />
         </div>
-        {searchTerm && (
+        {searchTerm && !isLoading && (
           <div className="search-results">
             Found {filteredDomains.length} of {domains.length} domains
           </div>
         )}
       </div>
-      
+
       {/* Domain List */}
-      {domains.length > 0 && (
+      {!isLoading && filteredDomains.length > 0 && (
         <div className="domain-list-container">
+          <h3 className="section-title">All Domains</h3>
           <div className="domain-grid">
-            {filteredDomains.map((domain, index) => (
+            {filteredDomains.slice(0, 50).map((domain, index) => (
               <a 
                 key={domain.signature} 
                 href={domain.owner 
@@ -207,6 +417,11 @@ export default function Home() {
               </a>
             ))}
           </div>
+          {filteredDomains.length > 50 && (
+            <div className="more-domains-indicator">
+              Showing first 50 of {filteredDomains.length} domains
+            </div>
+          )}
         </div>
       )}
     </div>

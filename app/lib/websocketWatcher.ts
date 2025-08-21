@@ -99,24 +99,41 @@ export class WebSocketWatcher {
       if (domain) {
         this.stats.domainsFound++
         
-        // Get transaction details to extract domain address
-        const tx = await this.connection.getTransaction(signature, {
-          commitment: 'confirmed',
-          maxSupportedTransactionVersion: 0,
-        })
-        
-        const blockTime = tx?.blockTime || Math.floor(Date.now() / 1000)
-        
-        const domainData: DomainRegistration = {
-          name: domain,
-          signature: signature,
-          timestamp: new Date(blockTime * 1000).toISOString(),
-          blockTime: blockTime,
-          fee: tx?.meta?.fee,
-          owner: this.extractDomainAddress(tx) || ''
-        }
+        try {
+          // Get transaction details to extract domain address
+          const tx = await this.connection.getTransaction(signature, {
+            commitment: 'confirmed',
+            maxSupportedTransactionVersion: 0,
+          })
+          
+          const blockTime = tx?.blockTime || Math.floor(Date.now() / 1000)
+          const owner = this.extractDomainAddress(tx) || ''
+          
+          const domainData: DomainRegistration = {
+            name: domain,
+            signature: signature,
+            timestamp: new Date(blockTime * 1000).toISOString(),
+            blockTime: blockTime,
+            fee: tx?.meta?.fee,
+            owner: owner
+          }
 
-        this.onNewDomain(domainData)
+          this.onNewDomain(domainData)
+        } catch (error) {
+          // If RPC fails, still create domain with basic info
+          console.log('RPC failed for signature:', signature, 'using fallback data')
+          
+          const domainData: DomainRegistration = {
+            name: domain,
+            signature: signature,
+            timestamp: new Date().toISOString(),
+            blockTime: Math.floor(Date.now() / 1000),
+            fee: 0,
+            owner: '' // Empty owner if RPC fails
+          }
+
+          this.onNewDomain(domainData)
+        }
       }
       
       this.onStatsUpdate(this.stats)
@@ -221,7 +238,7 @@ export class WebSocketWatcher {
       if ('staticAccountKeys' in tx.transaction.message) {
         const staticKeys = tx.transaction.message.staticAccountKeys
         if (Array.isArray(staticKeys) && staticKeys.length > 7) {
-          // Based on the transaction structure, the owner is typically at index 7
+          // Based on the debug output, owner is at index 7
           return staticKeys[7]
         }
       }
@@ -231,6 +248,21 @@ export class WebSocketWatcher {
         const accountKeys = tx.transaction.message.accountKeys
         if (Array.isArray(accountKeys) && accountKeys.length > 7) {
           return accountKeys[7]
+        }
+      }
+      
+      // Try to find the owner from the account keys array
+      const accountKeys = this.getAccountKeys(tx)
+      if (accountKeys.length > 7) {
+        return accountKeys[7]
+      }
+      
+      // If we can't find it at index 7, try to find it in the accounts
+      for (let i = 0; i < accountKeys.length; i++) {
+        const key = accountKeys[i]
+        // Skip program IDs and known addresses
+        if (key !== TLDH_PROGRAM_ID && key !== '11111111111111111111111111111111') {
+          return key
         }
       }
     } catch (error) {

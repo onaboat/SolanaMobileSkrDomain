@@ -1,32 +1,9 @@
 import { NextRequest } from 'next/server'
 import { WebSocketWatcher } from '../../lib/websocketWatcher'
-import { promises as fs } from 'fs'
-import path from 'path'
-
-const DOMAINS_FILE = path.join(process.cwd(), 'data', 'domains.json')
+import { prisma } from '../../lib/prisma'
 
 let watcher: WebSocketWatcher | null = null
 let connections: any[] = []
-
-// Function to save domains to file
-async function saveDomainsToFile(domains: any[]) {
-  try {
-    await fs.mkdir(path.dirname(DOMAINS_FILE), { recursive: true })
-    await fs.writeFile(DOMAINS_FILE, JSON.stringify(domains, null, 2))
-  } catch (error) {
-    console.error('Error saving domains to file:', error)
-  }
-}
-
-// Function to load existing domains
-async function loadDomainsFromFile() {
-  try {
-    const data = await fs.readFile(DOMAINS_FILE, 'utf-8')
-    return JSON.parse(data)
-  } catch (error) {
-    return []
-  }
-}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -41,41 +18,60 @@ export async function GET(request: NextRequest) {
         rpcUrl,
         async (domain) => {
           try {
-            // Load existing domains
-            const existingDomains = await loadDomainsFromFile()
-            
-            // Check if domain already exists
-            const domainExists = existingDomains.some((d: any) => d.signature === domain.signature)
-            
-            if (!domainExists) {
-              // Add new domain to the beginning of the array
-              const updatedDomains = [domain, ...existingDomains]
-              
-              // Save updated domains to file
-              await saveDomainsToFile(updatedDomains)
-              
-              console.log(`✅ New domain saved: ${domain.name}`)
-            }
-            
-            // Broadcast new domain to all connections
-            connections.forEach(conn => {
-              try {
-                conn.write(`data: ${JSON.stringify({ type: 'newDomain', domain })}\n\n`)
-              } catch (error) {
-                console.error('Error sending to connection:', error)
-              }
+            // Check if domain already exists in database
+            const existingDomain = await prisma.domain.findUnique({
+              where: { signature: domain.signature }
             })
+            
+            if (!existingDomain) {
+              // Add new domain to database
+              const newDomain = await prisma.domain.create({
+                data: {
+                  signature: domain.signature,
+                  name: domain.name,
+                  timestamp: domain.timestamp,
+                  blockTime: domain.blockTime,
+                  owner: domain.owner,
+                  fee: domain.fee
+                }
+              })
+              
+              console.log(`✅ New domain saved to database: ${domain.name}`)
+              console.log(` Broadcasting to ${connections.length} connections`)
+              
+              // Broadcast new domain to all connections
+              connections.forEach((conn, index) => {
+                try {
+                  const message = JSON.stringify({ type: 'newDomain', domain: newDomain })
+                  conn.write(`data: ${message}\n\n`)
+                  console.log(` Sent to connection ${index}: ${domain.name}`)
+                } catch (error) {
+                  console.error(`❌ Error sending to connection ${index}:`, error)
+                  // Remove failed connection
+                  connections.splice(index, 1)
+                }
+              })
+            } else {
+              console.log(`⚠️ Domain already exists in database: ${domain.name}`)
+            }
           } catch (error) {
-            console.error('Error processing new domain:', error)
+            // Handle unique constraint error gracefully
+            if (error instanceof Error && 'code' in error && error.code === 'P2002') {
+              console.log(`⚠️ Domain already exists (constraint error): ${domain.name}`)
+            } else {
+              console.error('Error processing new domain:', error)
+            }
           }
         },
         (stats) => {
           // Broadcast stats update to all connections
-          connections.forEach(conn => {
+          connections.forEach((conn, index) => {
             try {
               conn.write(`data: ${JSON.stringify({ type: 'stats', stats })}\n\n`)
             } catch (error) {
               console.error('Error sending stats to connection:', error)
+              // Remove failed connection
+              connections.splice(index, 1)
             }
           })
         }
@@ -113,11 +109,16 @@ export async function GET(request: NextRequest) {
     start(controller) {
       const connection = {
         write: (data: string) => {
-          controller.enqueue(new TextEncoder().encode(data))
+          try {
+            controller.enqueue(new TextEncoder().encode(data))
+          } catch (error) {
+            console.error('Error writing to controller:', error)
+          }
         }
       }
       
       connections.push(connection)
+      console.log(` New SSE connection established. Total connections: ${connections.length}`)
       
       // Send initial stats
       const stats = watcher ? watcher.getStats() : { totalProcessed: 0, domainsFound: 0, isConnected: false }
@@ -126,6 +127,7 @@ export async function GET(request: NextRequest) {
       // Clean up on close
       request.signal.addEventListener('abort', () => {
         connections = connections.filter(conn => conn !== connection)
+        console.log(`🔌 SSE connection closed. Remaining connections: ${connections.length}`)
       })
     }
   })
